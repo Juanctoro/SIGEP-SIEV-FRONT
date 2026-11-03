@@ -36,3 +36,25 @@ Tailwind se integra mediante `@tailwindcss/vite` y `@import 'tailwindcss';`. La 
 ## Alcance del proyecto
 
 Portal público y catálogo digital, gestión comercial y cotizaciones, inventario y materiales, seguimiento de proyectos y control del flujo de caja. Esta base aún no implementa los módulos ni la conexión al backend.
+
+## Marketplace (rama `feat/market-mock`)
+
+Tienda de tecnología en `/tienda`, funcionando solo en el frontend con datos de demostración:
+
+- Inicio con destacados, categorías, ofertas del día y novedades.
+- Catálogo con búsqueda, filtros (categoría, marca, precio, calificación, disponibilidad, ofertas), orden, paginación y vista en cuadrícula o lista. Los filtros viven en la URL.
+- Detalle de producto con galería, colores, opciones de almacenamiento, especificaciones y reseñas.
+- Carrito (panel lateral y página), cupones de prueba (`SIEV10`, `BIENVENIDO`, `ENVIOGRATIS`) y envío gratis desde $299.900.
+- Listas: Favoritos y listas personalizadas (crear, renombrar, eliminar, agregar todo al carrito).
+- Checkout en tres pasos (envío, pago y confirmación) e historial de pedidos.
+
+Carrito, listas, pedidos y reseñas se guardan en `localStorage`. El inicio de sesión queda pendiente del módulo de autenticación.
+
+### Estructura
+
+- `src/market/data/`: catálogo, marcas, cupones y reseñas de ejemplo.
+- `src/market/services/catalogService.js`: única capa de acceso a datos. Cada función indica el endpoint esperado; para conectar el backend se reemplaza su cuerpo por la petición HTTP y se conserva la forma de la respuesta.
+- `src/market/context/StoreContext.jsx`: estado del carrito, listas, pedidos y notificaciones.
+- `src/market/components/` y `src/market/pages/`: componentes y vistas.
+
+Las imágenes de producto son ilustraciones vectoriales (`ProductArt`) que deben reemplazarse por fotos reales cuando el backend las entregue.
