@@ -39,9 +39,9 @@ Portal público y catálogo digital, gestión comercial y cotizaciones, inventar
 
 ## Landing institucional
 
-- `src/data/institutional.js`: textos, servicios, proyectos y contactos de ejemplo.
-- `src/components/ContactForm.jsx`: validación y envío simulado del formulario.
+- `src/data/institutional.js`: información institucional, servicios, clientes y contactos suministrados; proyectos conceptuales de ejemplo.
+- `src/components/ContactForm.jsx`: validación y preparación del mensaje para WhatsApp.
 - `src/assets/LogoSIEV.png`: identidad visual suministrada.
 - `src/index.css`: colores `principal` y `secundario`, estilos y adaptación móvil.
 
-El portafolio contiene ilustraciones conceptuales; no representa obras ejecutadas. El formulario no transmite ni almacena datos. Para producción: reemplazar el contenido mock, verificar contactos, integrar el endpoint de envío y su manejo de errores, incorporar la política de tratamiento de datos aprobada y conectar el inicio de sesión. El botón de acceso abre por ahora un aviso informativo.
+El portafolio contiene ilustraciones conceptuales; no representa obras ejecutadas. El formulario valida nombre, detalle de la necesidad y teléfono opcional, y abre WhatsApp al +57 318 309 0738 con el mensaje codificado. El visitante debe confirmar el envío en WhatsApp; el sitio no almacena solicitudes ni envía mensajes automáticamente. Si la nueva pestaña no se abre, se muestra un enlace alternativo. El botón de acceso abre por ahora un aviso informativo. Pendientes: proyectos y fotografías reales, política de tratamiento de datos aprobada e inicio de sesión.
