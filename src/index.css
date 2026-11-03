@@ -17,7 +17,7 @@
   ::selection { background: var(--color-secundario); color: white; }
 }
 
-.container { width: min(1200px, calc(100% - 80px)); margin-inline: auto; }
+.container { width: calc(100% - clamp(48px, 6vw, 112px)); max-width: none; margin-inline: auto; }
 .section { padding-block: 104px; }
 .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; margin-bottom: 25px; }
 h1, h2, h3, p { margin-top: 0; }
