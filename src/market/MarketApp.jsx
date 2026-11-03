@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router'
+import { Outlet, Route, Routes, useLocation } from 'react-router'
 import './market.css'
 import { StoreProvider } from './context/StoreContext'
 import Header from './components/Header'
@@ -40,12 +40,11 @@ function MarketLayout() {
   )
 }
 
-// Rutas del marketplace. Se montan dentro del <BrowserRouter> de la aplicación.
+// Rutas relativas al montaje /tienda/* del enrutador principal.
 export default function MarketRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/tienda" replace />} />
-      <Route path="/tienda" element={<MarketLayout />}>
+      <Route element={<MarketLayout />}>
         <Route index element={<Home />} />
         <Route path="catalogo" element={<Catalog />} />
         <Route path="producto/:slug" element={<ProductDetail />} />
@@ -58,7 +57,6 @@ export default function MarketRoutes() {
         <Route path="ayuda" element={<Help />} />
         <Route path="*" element={<NotFound />} />
       </Route>
-      <Route path="*" element={<Navigate to="/tienda" replace />} />
     </Routes>
   )
 }

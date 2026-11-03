@@ -27,7 +27,8 @@ Abre la dirección que muestre Vite en la terminal.
 ## Estructura inicial
 
 - `src/main.jsx`: entrada de React.
-- `src/App.jsx`: componente principal.
+- `src/App.jsx`: enrutador principal: landing en `/` y marketplace en `/tienda`.
+- `src/LandingPage.jsx`: página institucional.
 - `src/index.css`: estilos globales e importación de Tailwind.
 - `vite.config.js`: plugins de React y Tailwind.
 
@@ -37,7 +38,15 @@ Tailwind se integra mediante `@tailwindcss/vite` y `@import 'tailwindcss';`. La 
 
 Portal público y catálogo digital, gestión comercial y cotizaciones, inventario y materiales, seguimiento de proyectos y control del flujo de caja. Esta base aún no implementa los módulos ni la conexión al backend.
 
-## Marketplace (rama `feat/market-mock`)
+## Landing institucional
+
+- `src/data/institutional.js`: información institucional, servicios, clientes y contactos suministrados; proyectos conceptuales de ejemplo.
+- `src/components/ContactForm.jsx`: validación y preparación del mensaje para WhatsApp.
+- `src/assets/LogoSIEV.png`: identidad visual suministrada.
+- `src/index.css`: colores `principal` y `secundario`, estilos y adaptación móvil.
+
+El portafolio contiene ilustraciones conceptuales; no representa obras ejecutadas. El formulario valida nombre, detalle de la necesidad y teléfono opcional, y abre WhatsApp al +57 318 309 0738 con el mensaje codificado. El visitante debe confirmar el envío en WhatsApp; el sitio no almacena solicitudes ni envía mensajes automáticamente. Si la nueva pestaña no se abre, se muestra un enlace alternativo. El botón de acceso dirige al formulario de autenticación de demostración. Pendientes: proyectos y fotografías reales, política de tratamiento de datos aprobada y autenticación real con backend.
+## Marketplace
 
 Tienda de tecnología en `/tienda`, funcionando solo en el frontend con datos de demostración:
 
@@ -58,3 +67,16 @@ Carrito, listas, pedidos y reseñas se guardan en `localStorage`. El inicio de s
 - `src/market/components/` y `src/market/pages/`: componentes y vistas.
 
 Las imágenes de producto son ilustraciones vectoriales (`ProductArt`) que deben reemplazarse por fotos reales cuando el backend las entregue.
+
+En producción, el servidor debe redirigir las rutas de la aplicación a `index.html` para permitir abrir directamente `/tienda/catalogo` y las demás rutas de React Router.
+
+## Autenticación de demostración
+
+- `/login`: inicio de sesión con usuario y contraseña.
+- `/registro`: registro con nombre, usuario, correo, contraseña y confirmación.
+- `/cuenta`: perfil de la sesión; redirige al login si no se ha iniciado sesión.
+- Cuenta pública de prueba: usuario `demo.siev`, contraseña `SievDemo2026!`.
+
+El registro y las credenciales viven exclusivamente en memoria y se pierden al recargar. La contraseña se transforma con PBKDF2 y un salt aleatorio para compararla durante la demostración; no se guarda en localStorage ni sessionStorage. No se envían correos ni se verifica su titularidad. La sesión solo representa el estado de la interfaz y no protege recursos del servidor. No usar credenciales reales.
+
+`src/auth/authService.js` contiene el adaptador que debe reemplazarse al integrar el backend. La autenticación real debe validar credenciales y permisos en el servidor, verificar el correo y proporcionar la sesión; el frontend no asigna roles ni acceso al sistema interno. La tienda sigue conservando sus datos de ejemplo localmente, sin asociarlos a una cuenta real.

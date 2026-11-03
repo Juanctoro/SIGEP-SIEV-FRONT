@@ -59,6 +59,7 @@ export default function Footer() {
         <div>
           <h2 className="mb-4 text-[11px] font-bold uppercase tracking-[.18em] text-white">Tu compra</h2>
           <ul className="space-y-2.5 text-[13px]">
+            <li><Link to="/" className="hover:text-white">Sitio institucional</Link></li>
             <li><Link to={paths.orders} className="hover:text-white">Mis pedidos</Link></li>
             <li><Link to={paths.lists} className="hover:text-white">Mis listas</Link></li>
             <li><Link to={paths.cart} className="hover:text-white">Carrito</Link></li>
