@@ -36,3 +36,12 @@ Tailwind se integra mediante `@tailwindcss/vite` y `@import 'tailwindcss';`. La 
 ## Alcance del proyecto
 
 Portal público y catálogo digital, gestión comercial y cotizaciones, inventario y materiales, seguimiento de proyectos y control del flujo de caja. Esta base aún no implementa los módulos ni la conexión al backend.
+
+## Landing institucional
+
+- `src/data/institutional.js`: textos, servicios, proyectos y contactos de ejemplo.
+- `src/components/ContactForm.jsx`: validación y envío simulado del formulario.
+- `src/assets/LogoSIEV.png`: identidad visual suministrada.
+- `src/index.css`: colores `principal` y `secundario`, estilos y adaptación móvil.
+
+El portafolio contiene ilustraciones conceptuales; no representa obras ejecutadas. El formulario no transmite ni almacena datos. Para producción: reemplazar el contenido mock, verificar contactos, integrar el endpoint de envío y su manejo de errores, incorporar la política de tratamiento de datos aprobada y conectar el inicio de sesión. El botón de acceso abre por ahora un aviso informativo.
