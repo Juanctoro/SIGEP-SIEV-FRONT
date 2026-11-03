@@ -1,35 +1,18 @@
 import { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router'
-import { ShoppingCart, Trash2, Truck, X } from 'lucide-react'
+import { MessageCircle, ShoppingCart, Trash2, X } from 'lucide-react'
 import ProductArt from './ProductArt'
 import { QuantityInput } from './ui'
 import { button } from './styles'
 import { useStore } from '../context/StoreContext'
 import { computeTotals } from '../services/catalogService'
-import { shippingRules } from '../data/catalog'
 import { formatPrice, plural } from '../lib/format'
 import { paths } from '../routes'
 
-export function FreeShippingMeter({ subtotal }) {
-  const missing = shippingRules.freeFrom - subtotal
-  const pct = Math.min(100, (subtotal / shippingRules.freeFrom) * 100)
-  return (
-    <div className="bg-[#f6f6f4] p-3">
-      <p className="mb-2 flex items-center gap-2 text-[12px]">
-        <Truck size={15} className={missing <= 0 ? 'text-[#20592b]' : 'text-principal'} />
-        {missing <= 0 ? <strong className="font-semibold text-[#20592b]">¡Tu pedido tiene envío gratis!</strong> : <span>Te faltan <strong>{formatPrice(missing)}</strong> para el envío gratis</span>}
-      </p>
-      <div className="h-1.5 bg-[#e2e2e8]" role="progressbar" aria-valuenow={Math.round(pct)} aria-valuemin={0} aria-valuemax={100} aria-label="Progreso hacia el envío gratis">
-        <div className={`h-full transition-all ${missing <= 0 ? 'bg-[#2f7a3d]' : 'bg-principal'}`} style={{ width: `${pct}%` }} />
-      </div>
-    </div>
-  )
-}
-
 export default function CartDrawer() {
-  const { cartOpen, setCartOpen, cartLines, updateQty, removeFromCart, coupon } = useStore()
+  const { cartOpen, setCartOpen, cartLines, updateQty, removeFromCart } = useStore()
   const navigate = useNavigate()
-  const totals = computeTotals(cartLines, { coupon })
+  const totals = computeTotals(cartLines)
   const close = () => setCartOpen(false)
 
   useEffect(() => {
@@ -60,7 +43,6 @@ export default function CartDrawer() {
           </div>
         ) : (
           <>
-            <div className="px-5 pt-4"><FreeShippingMeter subtotal={totals.subtotal} /></div>
             <ul className="flex-1 divide-y divide-[#eeeef2] overflow-y-auto px-5">
               {cartLines.map((line) => (
                 <li key={line.key} className="flex gap-3 py-4">
@@ -78,12 +60,11 @@ export default function CartDrawer() {
               ))}
             </ul>
             <div className="space-y-3 border-t border-[#eeeef2] bg-[#fafaf8] px-5 py-4">
-              {totals.discount > 0 && <p className="flex justify-between text-[13px] text-[#20592b]"><span>Cupón {coupon.code}</span><span>-{formatPrice(totals.discount)}</span></p>}
-              <p className="flex items-baseline justify-between"><span className="text-[13px] text-[#626570]">Subtotal</span><span className="text-[20px] font-semibold tracking-[-.03em]">{formatPrice(totals.subtotal - totals.discount)}</span></p>
-              <p className="text-[11px] text-[#73757d]">Impuestos incluidos. El envío se calcula en el siguiente paso.</p>
+              <p className="flex items-baseline justify-between"><span className="text-[13px] text-[#626570]">Subtotal</span><span className="text-[20px] font-semibold tracking-[-.03em]">{formatPrice(totals.subtotal)}</span></p>
+              <p className="text-[11px] text-[#73757d]">Impuestos incluidos. El envío y la forma de pago se acuerdan por WhatsApp.</p>
               <div className="grid grid-cols-2 gap-2">
                 <Link to={paths.cart} onClick={close} className={button('subtle')}>Ver carrito</Link>
-                <button type="button" onClick={() => { close(); navigate(paths.checkout) }} className={button('primary')}>Pagar</button>
+                <button type="button" onClick={() => { close(); navigate(paths.checkout) }} className={button('primary')}><MessageCircle size={15} /> Hacer pedido</button>
               </div>
             </div>
           </>

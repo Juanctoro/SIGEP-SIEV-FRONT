@@ -265,16 +265,4 @@ export const products = rawProducts.map(buildProduct)
 
 export const brands = [...new Set(products.map((p) => p.brand))].sort((a, b) => a.localeCompare(b, 'es'))
 
-export const coupons = {
-  SIEV10: { code: 'SIEV10', label: '10 % de descuento (máx. $200.000)', type: 'percent', value: 10, max: 200000 },
-  BIENVENIDO: { code: 'BIENVENIDO', label: '$50.000 en compras desde $500.000', type: 'fixed', value: 50000, min: 500000 },
-  ENVIOGRATIS: { code: 'ENVIOGRATIS', label: 'Envío gratis en tu pedido', type: 'shipping' },
-}
-
-export const shippingRules = {
-  freeFrom: 299900,
-  standard: 14900,
-  express: 29900,
-}
-
 export const cities = ['Cali', 'Bogotá', 'Medellín', 'Barranquilla', 'Cartagena', 'Bucaramanga', 'Pereira', 'Manizales', 'Palmira', 'Tuluá', 'Buga', 'Popayán', 'Pasto', 'Armenia', 'Ibagué', 'Neiva', 'Santa Marta', 'Villavicencio']

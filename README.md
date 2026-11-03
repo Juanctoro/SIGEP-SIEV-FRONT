@@ -53,15 +53,16 @@ Tienda de tecnología en `/tienda`, funcionando solo en el frontend con datos de
 - Inicio con destacados, categorías, ofertas del día y novedades.
 - Catálogo con búsqueda, filtros (categoría, marca, precio, calificación, disponibilidad, ofertas), orden, paginación y vista en cuadrícula o lista. Los filtros viven en la URL.
 - Detalle de producto con galería, colores, opciones de almacenamiento, especificaciones y reseñas.
-- Carrito (panel lateral y página), cupones de prueba (`SIEV10`, `BIENVENIDO`, `ENVIOGRATIS`) y envío gratis desde $299.900.
+- Carrito en panel lateral y en página propia.
 - Listas: Favoritos y listas personalizadas (crear, renombrar, eliminar, agregar todo al carrito).
-- Checkout en tres pasos (envío, pago y confirmación) e historial de pedidos.
+- Pedido por WhatsApp: el cliente llena sus datos (nombre, entrega y forma de pago preferida) y se abre WhatsApp con el pedido redactado para el número de la empresa. No hay pasarela de pago ni base de datos: el asesor confirma disponibilidad, envío y pago en la conversación. Los pedidos enviados quedan en "Mis pedidos".
 
 Carrito, listas, pedidos y reseñas se guardan en `localStorage`. El inicio de sesión queda pendiente del módulo de autenticación.
 
 ### Estructura
 
-- `src/market/data/`: catálogo, marcas, cupones y reseñas de ejemplo.
+- `src/market/data/`: catálogo, marcas y reseñas de ejemplo.
+- `src/market/lib/whatsapp.js`: arma los mensajes de pedido y de consulta. Usa el número de `src/data/institutional.js` (el mismo de la landing), así que cambiarlo ahí lo cambia en toda la plataforma.
 - `src/market/services/catalogService.js`: única capa de acceso a datos. Cada función indica el endpoint esperado; para conectar el backend se reemplaza su cuerpo por la petición HTTP y se conserva la forma de la respuesta.
 - `src/market/context/StoreContext.jsx`: estado del carrito, listas, pedidos y notificaciones.
 - `src/market/components/` y `src/market/pages/`: componentes y vistas.

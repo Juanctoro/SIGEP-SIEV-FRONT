@@ -7,7 +7,7 @@ import { lineKey, priceFor } from '../lib/cart'
 // Cuando exista backend, estas acciones deben llamar a los endpoints de carrito/listas/pedidos.
 
 const StoreContext = createContext(null)
-const STORAGE_KEY = 'siev-market:v1'
+const STORAGE_KEY = 'siev-market:v2' // v2: pedidos por WhatsApp (sin pagos ni cupones)
 const DEFAULT_LIST = { id: 'favoritos', name: 'Favoritos', items: [], createdAt: new Date(0).toISOString(), locked: true }
 
 const initialState = {
@@ -16,7 +16,6 @@ const initialState = {
   orders: [],
   recent: [],
   myReviews: {},
-  coupon: null,
 }
 
 function loadState() {
@@ -100,8 +99,7 @@ export function StoreProvider({ children }) {
     })
   }, [state.cart, notify])
 
-  const clearCart = useCallback(() => setState((s) => ({ ...s, cart: [], coupon: null })), [])
-  const setCoupon = useCallback((coupon) => setState((s) => ({ ...s, coupon })), [])
+  const clearCart = useCallback(() => setState((s) => ({ ...s, cart: [] })), [])
 
   const cartLines = useMemo(() => state.cart
     .map((line) => {
@@ -162,7 +160,7 @@ export function StoreProvider({ children }) {
   }, [state.cart, notify])
 
   // ---------- Pedidos, recientes y reseñas ----------
-  const addOrder = useCallback((order) => setState((s) => ({ ...s, orders: [order, ...s.orders], cart: [], coupon: null })), [])
+  const addOrder = useCallback((order) => setState((s) => ({ ...s, orders: [order, ...s.orders], cart: [] })), [])
 
   const trackView = useCallback((productId) => {
     setState((s) => ({ ...s, recent: [productId, ...s.recent.filter((id) => id !== productId)].slice(0, 12) }))
@@ -181,10 +179,10 @@ export function StoreProvider({ children }) {
     cartOpen, setCartOpen,
     toasts, notify, dismissToast,
     listDialog, openListDialog: setListDialog, closeListDialog: () => setListDialog(null),
-    addToCart, updateQty, removeFromCart, clearCart, setCoupon,
+    addToCart, updateQty, removeFromCart, clearCart,
     isInList, isSaved, toggleInList, createList, renameList, deleteList, moveCartLineToList,
     addOrder, trackView, addReview,
-  }), [state, cartLines, cartOpen, toasts, notify, dismissToast, listDialog, addToCart, updateQty, removeFromCart, clearCart, setCoupon, isInList, isSaved, toggleInList, createList, renameList, deleteList, moveCartLineToList, addOrder, trackView, addReview])
+  }), [state, cartLines, cartOpen, toasts, notify, dismissToast, listDialog, addToCart, updateQty, removeFromCart, clearCart, isInList, isSaved, toggleInList, createList, renameList, deleteList, moveCartLineToList, addOrder, trackView, addReview])
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>
 }

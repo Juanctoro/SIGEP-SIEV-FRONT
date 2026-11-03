@@ -32,7 +32,7 @@ function Hero() {
             <Link to={paths.catalog({ oferta: '1', orden: 'descuento' })} className="inline-flex items-center gap-3 text-[13px] font-semibold hover:text-secundario">Ver ofertas del día <ArrowRight size={15} /></Link>
           </div>
           <dl className="mt-10 grid max-w-md grid-cols-3 border-t border-[#e2e2e8] pt-5">
-            {[[`${products.length}+`, 'productos'], [`${brands.length}`, 'marcas'], ['12', 'cuotas sin interés']].map(([n, l]) => (
+            {[[`${products.length}+`, 'productos'], [`${brands.length}`, 'marcas'], [`${categories.length}`, 'categorías']].map(([n, l]) => (
               <div key={l}><dt className="sr-only">{l}</dt><dd className="m-0 text-[24px] font-semibold tracking-[-.04em] text-secundario">{n}</dd><span className="text-[11px] text-[#73757d]">{l}</span></div>
             ))}
           </dl>
