@@ -3,7 +3,7 @@ import { Link, NavLink, useLocation, useNavigate, useSearchParams } from 'react-
 import { ChevronDown, Heart, LayoutGrid, Menu, Package, Search, ShoppingCart, User, X } from 'lucide-react'
 import logo from '../../assets/LogoSIEV.png'
 import ProductArt from './ProductArt'
-import { Dialog } from './ui'
+import AuthLink from '../../auth/AuthLink'
 import { button, cx } from './styles'
 import { useStore } from '../context/StoreContext'
 import { categories } from '../data/catalog'
@@ -100,7 +100,6 @@ export default function Header() {
   const { cartCount, savedCount, setCartOpen } = useStore()
   const [menuOpen, setMenuOpen] = useState(false)
   const [megaOpen, setMegaOpen] = useState(false)
-  const [loginOpen, setLoginOpen] = useState(false)
   const location = useLocation()
   const megaRef = useRef(null)
 
@@ -140,9 +139,7 @@ export default function Header() {
           </Link>
           <div className="hidden flex-1 md:block"><SearchBox /></div>
           <nav className="ml-auto flex items-center gap-1 sm:gap-2" aria-label="Acciones de la cuenta">
-            <button type="button" onClick={() => setLoginOpen(true)} className="hidden items-center gap-2 border border-secundario px-3.5 py-2.5 text-[12px] font-semibold text-secundario transition hover:bg-secundario hover:text-white lg:flex">
-              <User size={16} /> Iniciar sesión
-            </button>
+            <AuthLink className="hidden items-center gap-2 border border-secundario px-3.5 py-2.5 text-[12px] font-semibold text-secundario transition hover:bg-secundario hover:text-white lg:flex"><User size={16} /></AuthLink>
             <IconAction to={paths.orders} icon={Package} label="Pedidos" />
             <IconAction to={paths.lists} icon={Heart} label="Listas" count={savedCount} />
             <IconAction onClick={() => setCartOpen(true)} icon={ShoppingCart} label="Carrito" count={cartCount} />
@@ -186,7 +183,7 @@ export default function Header() {
               <button type="button" aria-label="Cerrar menú" onClick={() => setMenuOpen(false)} className="grid size-10 place-items-center"><X size={22} /></button>
             </div>
             <div className="p-4">
-              <button type="button" onClick={() => { setMenuOpen(false); setLoginOpen(true) }} className={button('outline', 'w-full')}><User size={16} /> Iniciar sesión</button>
+              <AuthLink onClick={() => setMenuOpen(false)} className={button('outline', 'w-full')}><User size={16} /></AuthLink>
             </div>
             <p className="px-4 pb-2 text-[10px] font-bold uppercase tracking-[.18em] text-[#73757d]">Categorías</p>
             <nav className="flex flex-col px-2">
@@ -201,14 +198,7 @@ export default function Header() {
         </div>
       )}
 
-      <Dialog open={loginOpen} onClose={() => setLoginOpen(false)} labelledBy="login-title">
-        <p className="mb-3 text-[11px] font-bold uppercase tracking-[.18em] text-secundario">SIGEP-SIEV</p>
-        <h2 id="login-title" className="mb-3 text-[28px] font-semibold tracking-[-.04em]">Ingresa a tu cuenta</h2>
-        <p className="mb-6 text-[14px] leading-relaxed text-[#626570]">
-          El inicio de sesión estará disponible próximamente. Mientras tanto puedes comprar como invitado: tu carrito, tus listas y tus pedidos se guardan en este navegador.
-        </p>
-        <button type="button" autoFocus onClick={() => setLoginOpen(false)} className={button('secondary')}>Entendido</button>
-      </Dialog>
+
     </>
   )
 }

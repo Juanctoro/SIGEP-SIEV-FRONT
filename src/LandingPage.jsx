@@ -1,7 +1,8 @@
 import { Link } from 'react-router'
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import logo from './assets/LogoSIEV.png'
 import ContactForm from './components/ContactForm'
+import AuthLink from './auth/AuthLink'
 import { clients, company, navigation, process, projects, services, values } from './data/institutional'
 
 function ElectricalArt({ type = 'panel' }) {
@@ -20,7 +21,6 @@ function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [active, setActive] = useState('inicio')
   const [filter, setFilter] = useState('Todos')
-  const dialog = useRef(null)
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -39,7 +39,7 @@ function LandingPage() {
         <nav id="main-navigation" aria-label="Navegación principal" className={menuOpen ? 'navigation is-open' : 'navigation'} onKeyDown={(event) => { if (event.key === 'Escape') setMenuOpen(false) }}>
           {navigation.map(({ id, label }) => <a key={id} href={`#${id}`} aria-current={active === id ? 'location' : undefined} onClick={() => setMenuOpen(false)}>{label}</a>)}
           <Link to="/tienda" onClick={() => setMenuOpen(false)}>Tienda</Link>
-          <button type="button" className="login-button" onClick={() => { setMenuOpen(false); dialog.current.showModal() }}>Iniciar sesión <span aria-hidden="true">↗</span></button>
+          <AuthLink className="login-button" onClick={() => setMenuOpen(false)} />
         </nav>
       </div>
     </header>
@@ -60,7 +60,6 @@ function LandingPage() {
       <section id="contacto" className="section section-anchor contact-section"><div className="container contact-grid"><div className="contact-copy"><p className="eyebrow">03 / Contacto</p><h2>Solicite su<br /><em>cotización.</em></h2><p>Cuéntenos qué necesita y le respondemos con una propuesta a la medida.</p><dl className="contact-details"><div><dt>Correo</dt><dd><a href={`mailto:${company.email}`}>{company.email}</a></dd></div><div><dt>Celular</dt><dd><a href={`tel:+${company.whatsapp}`}>{company.phone}</a><br /><a href="tel:+573146372034">{company.secondPhone}</a></dd></div><div className="contact-address"><dt>Dirección</dt><dd><a href={company.mapsUrl} target="_blank" rel="noopener noreferrer">{company.location} ↗</a></dd></div></dl></div><ContactForm /></div></section>
     </main>
     <footer className="site-footer"><div className="container footer-top"><a href="#inicio" aria-label="Volver al inicio"><img src={logo} alt="SIEV" className="brand-logo" /></a><p>Energía para construir lo que viene.</p><a href="#inicio" className="text-link">Volver arriba ↑</a></div><div className="container footer-bottom"><p>© {currentYear} SIEV S.A.S.</p><p>Soluciones Integrales Eléctricas del Valle S.A.S.</p></div></footer>
-    <dialog ref={dialog} className="login-dialog" onClick={(event) => { if (event.target === event.currentTarget) dialog.current.close() }}><div className="dialog-content"><p className="eyebrow">SIGEP-SIEV</p><h2>Portal de colaboradores</h2><p>El inicio de sesión estará disponible próximamente para acceder al sistema interno de gestión.</p><button className="button button-secondary" type="button" autoFocus onClick={() => dialog.current.close()}>Entendido</button></div></dialog>
   </>
 }
 
