@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
-import { BadgeCheck, Check, Heart, ListPlus, PackageX, Share2, ShieldCheck, ShoppingCart, Store, ThumbsUp, Truck } from 'lucide-react'
+import { BadgeCheck, Check, Heart, ListPlus, MessageCircle, PackageX, Share2, ShieldCheck, ShoppingCart, Store, ThumbsUp, Truck } from 'lucide-react'
 import ProductArt from '../components/ProductArt'
 import ProductCard from '../components/ProductCard'
 import { Badge, Breadcrumbs, EmptyState, Price, QuantityInput, Rating, SectionHeading, Skeleton } from '../components/ui'
@@ -9,8 +9,8 @@ import { useStore } from '../context/StoreContext'
 import { priceFor } from '../lib/cart'
 import { getProductBySlug, getRelatedProducts } from '../services/catalogService'
 import { useAsync } from '../lib/useAsync'
-import { deliveryEstimate, formatDate, formatPrice, installments, plural } from '../lib/format'
-import { shippingRules } from '../data/catalog'
+import { formatDate, formatPrice, plural } from '../lib/format'
+import { buildProductQuestion, storeAddress, whatsappUrl } from '../lib/whatsapp'
 import { paths } from '../routes'
 
 const views = ['Vista frontal', 'Detalle', 'Medidas', 'Colores']
@@ -181,7 +181,7 @@ function ProductView({ product }) {
             <div className="mb-6 border-y border-[#e6e6eb] py-5">
               <Price price={price} oldPrice={oldPrice} size="lg" />
               {oldPrice && <p className="mt-1 text-[13px] font-semibold text-[#20592b]">Ahorras {formatPrice(oldPrice - price)}</p>}
-              <p className="mt-2 text-[13px] text-[#626570]">Hasta <strong>12 cuotas sin interés</strong> de {formatPrice(installments(price))} con tarjetas participantes.</p>
+              <p className="mt-2 text-[13px] text-[#626570]">Haz tu pedido y te confirmamos <strong>disponibilidad, envío y forma de pago</strong> por WhatsApp.</p>
             </div>
 
             <fieldset className="mb-5">
@@ -219,17 +219,18 @@ function ProductView({ product }) {
               {!soldOut && <QuantityInput value={qty} onChange={setQty} max={maxQty} />}
               <button type="button" disabled={soldOut} onClick={() => addToCart(product, { qty, color: color.name, option })} className={button('secondary', 'h-11 flex-1')}><ShoppingCart size={16} /> Agregar al carrito</button>
             </div>
-            <button type="button" disabled={soldOut} onClick={() => { addToCart(product, { qty, color: color.name, option, silent: true }); navigate(paths.checkout) }} className={button('primary', 'mb-4 h-12 w-full')}>Comprar ahora</button>
+            <button type="button" disabled={soldOut} onClick={() => { addToCart(product, { qty, color: color.name, option, silent: true }); navigate(paths.checkout) }} className={button('primary', 'mb-4 h-12 w-full')}><MessageCircle size={16} /> Pedir ahora</button>
 
             <div className="mb-7 flex flex-wrap gap-x-6 gap-y-2 text-[13px] font-semibold">
               <button type="button" onClick={() => toggleInList('favoritos', product)} aria-pressed={favorite} className={cx('flex items-center gap-2 hover:text-principal', favorite && 'text-principal')}><Heart size={16} fill={favorite ? 'currentColor' : 'none'} /> {favorite ? 'En Favoritos' : 'Guardar en Favoritos'}</button>
               <button type="button" onClick={() => openListDialog(product)} className="flex items-center gap-2 hover:text-secundario"><ListPlus size={16} /> Añadir a una lista</button>
               <button type="button" onClick={share} className="flex items-center gap-2 hover:text-secundario"><Share2 size={16} /> Compartir</button>
+              <a href={whatsappUrl(buildProductQuestion(product, { color: color.name, option }))} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[#1f7a43] hover:underline"><MessageCircle size={16} /> Preguntar por WhatsApp</a>
             </div>
 
             <ul className="divide-y divide-[#e6e6eb] border border-[#e6e6eb] bg-white text-[13px]">
-              <li className="flex gap-3 p-4"><Truck size={18} className="mt-0.5 shrink-0 text-principal" /><span><strong className="block font-semibold">Envío a domicilio {price >= shippingRules.freeFrom ? 'gratis' : `por ${formatPrice(shippingRules.standard)}`}</strong><span className="text-[#626570]">Llega el {deliveryEstimate('estandar').toLowerCase()}. Express disponible en el checkout.</span></span></li>
-              <li className="flex gap-3 p-4"><Store size={18} className="mt-0.5 shrink-0 text-principal" /><span><strong className="block font-semibold">Recoge en tienda gratis</strong><span className="text-[#626570]">Cali, Valle del Cauca · {deliveryEstimate('tienda')}</span></span></li>
+              <li className="flex gap-3 p-4"><Truck size={18} className="mt-0.5 shrink-0 text-principal" /><span><strong className="block font-semibold">Envío a domicilio</strong><span className="text-[#626570]">Coordinamos contigo la fecha y el costo del envío por WhatsApp.</span></span></li>
+              <li className="flex gap-3 p-4"><Store size={18} className="mt-0.5 shrink-0 text-principal" /><span><strong className="block font-semibold">Recoge sin costo en el punto de venta</strong><span className="text-[#626570]">{storeAddress}</span></span></li>
               <li className="flex gap-3 p-4"><ShieldCheck size={18} className="mt-0.5 shrink-0 text-principal" /><span><strong className="block font-semibold">{product.specs.Garantía ?? '1 año de garantía'}</strong><span className="text-[#626570]">Producto nuevo, sellado y con factura electrónica.</span></span></li>
             </ul>
           </div>

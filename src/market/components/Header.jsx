@@ -125,8 +125,8 @@ export default function Header() {
     <>
       <div className="bg-secundario text-[11px] text-[#e3e4ff]">
         <div className="flex w-full items-center justify-center gap-6 px-5 lg:px-10 2xl:px-14 py-2 sm:justify-between">
-          <p className="m-0"><span className="text-principal">ϟ</span> Envío gratis en compras desde {formatPrice(299900)}</p>
-          <p className="m-0 hidden gap-6 sm:flex"><span>12 cuotas sin interés</span><span>Garantía oficial</span><Link to={paths.help} className="underline-offset-2 hover:underline">Ayuda</Link></p>
+          <p className="m-0"><span className="text-principal">ϟ</span> Haz tu pedido y te atendemos directamente por WhatsApp</p>
+          <p className="m-0 hidden gap-6 sm:flex"><span>Envíos a todo el país</span><span>Garantía oficial</span><Link to={paths.help} className="underline-offset-2 hover:underline">Ayuda</Link></p>
         </div>
       </div>
 

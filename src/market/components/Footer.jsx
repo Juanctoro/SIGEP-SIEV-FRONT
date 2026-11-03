@@ -1,17 +1,18 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
-import { ArrowRight, CreditCard, Headset, RotateCcw, ShieldCheck, Truck } from 'lucide-react'
+import { ArrowRight, Headset, MessageCircle, RotateCcw, ShieldCheck, Truck } from 'lucide-react'
 import logo from '../../assets/LogoSIEV.png'
 import { categories } from '../data/catalog'
 import { useStore } from '../context/StoreContext'
 import { paths } from '../routes'
 import { inputClass } from './styles'
+import { storePhone, storeWhatsapp } from '../lib/whatsapp'
 
 const year = new Date().getFullYear()
 
 const benefits = [
-  { icon: Truck, title: 'Envío a todo el país', text: 'Gratis desde $299.900' },
-  { icon: CreditCard, title: 'Paga como quieras', text: 'Tarjeta, PSE o contraentrega' },
+  { icon: Truck, title: 'Envío a todo el país', text: 'O recoge en nuestro punto de venta' },
+  { icon: MessageCircle, title: 'Pide por WhatsApp', text: 'Te asesoramos en cada compra' },
   { icon: ShieldCheck, title: 'Garantía oficial', text: 'Productos nuevos y sellados' },
   { icon: RotateCcw, title: 'Devoluciones fáciles', text: 'Hasta 30 días después' },
 ]
@@ -50,7 +51,7 @@ export default function Footer() {
         <div>
           <span className="inline-block bg-white p-2"><img src={logo} alt="SIEV" className="h-12" /></span>
           <p className="mt-5 max-w-xs text-[13px] leading-relaxed">Tecnología para tu hogar y tu empresa, con el respaldo de Soluciones Integrales Eléctricas del Valle S.A.S.</p>
-          <p className="mt-4 flex items-center gap-2 text-[13px]"><Headset size={16} className="text-principal" /> +57 300 000 0000 · Lun a sáb</p>
+          <p className="mt-4 flex items-center gap-2 text-[13px]"><Headset size={16} className="text-principal" /> <a href={`https://wa.me/${storeWhatsapp}`} target="_blank" rel="noopener noreferrer" className="hover:text-white">{storePhone}</a> · WhatsApp</p>
         </div>
         <div>
           <h2 className="mb-4 text-[11px] font-bold uppercase tracking-[.18em] text-white">Categorías</h2>

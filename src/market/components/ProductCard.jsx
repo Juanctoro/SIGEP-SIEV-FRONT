@@ -1,11 +1,9 @@
 import { Link } from 'react-router'
-import { Heart, ListPlus, ShoppingCart, Truck } from 'lucide-react'
+import { Heart, ListPlus, ShoppingCart } from 'lucide-react'
 import ProductArt from './ProductArt'
 import { Badge, Price, Rating } from './ui'
 import { button, cx } from './styles'
 import { useStore } from '../context/StoreContext'
-import { formatPrice, installments } from '../lib/format'
-import { shippingRules } from '../data/catalog'
 import { paths } from '../routes'
 
 const badgeTone = (badge) => (badge === 'Oferta' || badge === 'Últimas unidades' ? 'orange' : badge === 'Nuevo' ? 'green' : 'indigo')
@@ -47,8 +45,7 @@ export default function ProductCard({ product, layout = 'grid' }) {
         <div className="mb-3"><Rating value={product.rating} count={product.reviews} size={12} /></div>
         <div className="mt-auto">
           <Price price={product.price} oldPrice={product.oldPrice} />
-          <p className="mt-1 text-[11px] text-[#626570]">12 cuotas de {formatPrice(installments(product.price))}</p>
-          {product.price >= shippingRules.freeFrom && !soldOut && <p className="mt-1 flex items-center gap-1.5 text-[11px] font-semibold text-[#20592b]"><Truck size={13} /> Envío gratis</p>}
+          {!soldOut && product.stock <= 5 && <p className="mt-1 text-[11px] font-semibold text-principal">¡Últimas {product.stock} unidades!</p>}
           {product.colors.length > 1 && (
             <div className="mt-2 flex items-center gap-1" aria-label={`${product.colors.length} colores disponibles`}>
               {product.colors.map((c) => <span key={c.name} title={c.name} className="size-3 rounded-full border border-[#c9cbd6]" style={{ background: c.hex }} />)}

@@ -7,6 +7,19 @@
 }
 
 .mk-root button { cursor: pointer; }
+
+/* La landing define estilos globales sin capa para h1, h2, h3, p y em (src/index.css).
+   Dentro de la tienda se devuelven a las capas de Tailwind para que manden las utilidades. */
+.mk-root :is(h1, h2, h3, p, em) {
+  font-size: revert-layer;
+  font-weight: revert-layer;
+  font-style: revert-layer;
+  line-height: revert-layer;
+  letter-spacing: revert-layer;
+  margin-top: revert-layer;
+  margin-bottom: revert-layer;
+  color: revert-layer;
+}
 .mk-root ::selection { background: var(--color-secundario); color: #fff; }
 .mk-root :where(a, button, input, select, textarea):focus-visible { outline: 3px solid var(--color-principal); outline-offset: 2px; }
 

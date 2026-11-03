@@ -3,7 +3,7 @@
 // cuerpo de cada función por la petición HTTP correspondiente y conservar la forma
 // de la respuesta para no tener que cambiar las páginas.
 
-import { brands, categories, coupons, products, shippingRules } from '../data/catalog'
+import { brands, categories, products } from '../data/catalog'
 import { generateReviews, ratingDistribution } from '../data/reviews'
 
 const LATENCY = 220
@@ -121,37 +121,20 @@ export function findProduct(id) {
   return products.find((p) => p.id === id) ?? null
 }
 
-/** POST /api/cupones/validar */
-export async function validateCoupon(code, subtotal) {
-  await wait(300)
-  const coupon = coupons[code.trim().toUpperCase()]
-  if (!coupon) return { ok: false, message: 'El cupón no existe o ya venció.' }
-  if (coupon.min && subtotal < coupon.min) return { ok: false, message: `Este cupón aplica para compras desde $${coupon.min.toLocaleString('es-CO')}.` }
-  return { ok: true, coupon }
-}
-
-export function computeTotals(lines, { coupon = null, shippingMethod = 'estandar' } = {}) {
-  const subtotal = lines.reduce((sum, line) => sum + line.unitPrice * line.qty, 0)
-  const savings = lines.reduce((sum, line) => sum + (line.unitOldPrice ? (line.unitOldPrice - line.unitPrice) * line.qty : 0), 0)
-  let discount = 0
-  if (coupon?.type === 'percent') discount = Math.min(Math.round((subtotal * coupon.value) / 100), coupon.max ?? Infinity)
-  if (coupon?.type === 'fixed') discount = subtotal >= (coupon.min ?? 0) ? coupon.value : 0
-
-  let shipping = 0
-  if (lines.length) {
-    if (shippingMethod === 'express') shipping = shippingRules.express
-    else if (shippingMethod === 'tienda') shipping = 0
-    else shipping = subtotal >= shippingRules.freeFrom ? 0 : shippingRules.standard
-    if (coupon?.type === 'shipping' && shippingMethod !== 'express') shipping = 0
+/** Totales del carrito. El envío y la forma de pago se acuerdan por WhatsApp. */
+export function computeTotals(lines) {
+  return {
+    subtotal: lines.reduce((sum, line) => sum + line.unitPrice * line.qty, 0),
+    savings: lines.reduce((sum, line) => sum + (line.unitOldPrice ? (line.unitOldPrice - line.unitPrice) * line.qty : 0), 0),
+    count: lines.reduce((n, l) => n + l.qty, 0),
   }
-  const total = Math.max(0, subtotal - discount) + shipping
-  const tax = Math.round(total - total / 1.19) // IVA incluido (19 %)
-  return { subtotal, savings, discount, shipping, total, tax, count: lines.reduce((n, l) => n + l.qty, 0) }
 }
 
-/** POST /api/pedidos */
-export async function createOrder(payload) {
-  await wait(1100)
+/**
+ * Registra el pedido antes de enviarlo por WhatsApp. Hoy solo genera el número de
+ * pedido localmente; si más adelante se guarda en el backend: POST /api/pedidos.
+ */
+export function createOrder(payload) {
   const id = `SV-${Date.now().toString().slice(-8)}`
-  return { ...payload, id, status: 'confirmado', createdAt: new Date().toISOString() }
+  return { ...payload, id, status: 'enviado', channel: 'whatsapp', createdAt: new Date().toISOString() }
 }

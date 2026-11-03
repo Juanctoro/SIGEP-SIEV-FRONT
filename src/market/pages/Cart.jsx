@@ -1,76 +1,32 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
-import { Heart, Lock, ShoppingCart, Tag, Trash2, X } from 'lucide-react'
+import { Heart, MessageCircle, ShoppingCart, Trash2 } from 'lucide-react'
 import ProductArt from '../components/ProductArt'
 import ProductCard from '../components/ProductCard'
-import { FreeShippingMeter } from '../components/CartDrawer'
 import { Breadcrumbs, Dialog, EmptyState, QuantityInput, SectionHeading } from '../components/ui'
-import { button, cx, inputClass } from '../components/styles'
+import { button } from '../components/styles'
 import { useStore } from '../context/StoreContext'
-import { computeTotals, getProductsByIds, validateCoupon } from '../services/catalogService'
-import { coupons } from '../data/catalog'
+import { computeTotals, getProductsByIds } from '../services/catalogService'
 import { formatPrice, plural } from '../lib/format'
 import { paths } from '../routes'
 
-export function CouponForm({ subtotal }) {
-  const { coupon, setCoupon, notify } = useStore()
-  const [code, setCode] = useState('')
-  const [error, setError] = useState('')
-  const [busy, setBusy] = useState(false)
-
-  async function apply(e) {
-    e.preventDefault()
-    if (!code.trim()) return
-    setBusy(true)
-    const result = await validateCoupon(code, subtotal)
-    setBusy(false)
-    if (!result.ok) { setError(result.message); return }
-    setCoupon(result.coupon)
-    setCode('')
-    setError('')
-    notify(`Cupón ${result.coupon.code} aplicado.`)
-  }
-
-  if (coupon) {
-    return (
-      <div className="flex items-center justify-between gap-3 border border-dashed border-[#2f7a3d] bg-[#edf7ee] px-3 py-2.5 text-[13px]">
-        <span className="flex items-center gap-2 text-[#20592b]"><Tag size={15} /><span><strong>{coupon.code}</strong> · {coupon.label}</span></span>
-        <button type="button" onClick={() => setCoupon(null)} aria-label="Quitar cupón" className="text-[#20592b] hover:text-[#b42318]"><X size={16} /></button>
-      </div>
-    )
-  }
-
-  return (
-    <form onSubmit={apply} noValidate>
-      <label htmlFor="coupon" className="mb-1.5 block text-[12px] font-semibold">¿Tienes un cupón?</label>
-      <div className="flex gap-2">
-        <input id="coupon" value={code} onChange={(e) => { setCode(e.target.value.toUpperCase()); setError('') }} placeholder="Código" className={cx(inputClass, 'uppercase')} aria-invalid={!!error} aria-describedby="coupon-help" />
-        <button type="submit" disabled={busy} className={button('outline', 'shrink-0 px-4 py-2')}>{busy ? 'Validando…' : 'Aplicar'}</button>
-      </div>
-      <p id="coupon-help" className={cx('mt-1.5 text-[11px]', error ? 'text-[#b42318]' : 'text-[#73757d]')}>{error || `Prueba con ${Object.keys(coupons).join(', ')}.`}</p>
-    </form>
-  )
-}
-
-export function OrderSummary({ totals, coupon, children }) {
+export function OrderSummary({ totals }) {
   return (
     <dl className="space-y-2.5 text-[13px]">
-      <div className="flex justify-between"><dt className="text-[#626570]">Subtotal ({plural(totals.count, 'producto')})</dt><dd className="m-0">{formatPrice(totals.subtotal)}</dd></div>
-      {totals.discount > 0 && <div className="flex justify-between text-[#20592b]"><dt>Cupón {coupon?.code}</dt><dd className="m-0">-{formatPrice(totals.discount)}</dd></div>}
-      <div className="flex justify-between"><dt className="text-[#626570]">Envío</dt><dd className="m-0">{totals.shipping === 0 ? <span className="font-semibold text-[#20592b]">Gratis</span> : formatPrice(totals.shipping)}</dd></div>
-      {children}
-      <div className="flex items-baseline justify-between border-t border-[#e2e2e8] pt-3"><dt className="text-[15px] font-semibold">Total</dt><dd className="m-0 text-[24px] font-semibold tracking-[-.03em]">{formatPrice(totals.total)}</dd></div>
-      <div className="flex justify-between text-[11px] text-[#73757d]"><dt>IVA incluido (19 %)</dt><dd className="m-0">{formatPrice(totals.tax)}</dd></div>
-      {totals.savings + totals.discount > 0 && <p className="m-0 bg-[#edf7ee] px-3 py-2 text-center text-[12px] font-semibold text-[#20592b]">Estás ahorrando {formatPrice(totals.savings + totals.discount)} en esta compra</p>}
+      <div className="flex justify-between"><dt className="text-[#626570]">Productos ({totals.count})</dt><dd className="m-0">{formatPrice(totals.subtotal)}</dd></div>
+      <div className="flex justify-between"><dt className="text-[#626570]">Envío</dt><dd className="m-0 text-right text-[#626570]">Se acuerda por WhatsApp</dd></div>
+      <div className="flex items-baseline justify-between border-t border-[#e2e2e8] pt-3"><dt className="text-[15px] font-semibold">Total estimado</dt><dd className="m-0 text-[24px] font-semibold tracking-[-.03em]">{formatPrice(totals.subtotal)}</dd></div>
+      <p className="m-0 text-[11px] text-[#73757d]">IVA incluido. Precios sujetos a confirmación de disponibilidad.</p>
+      {totals.savings > 0 && <p className="m-0 bg-[#edf7ee] px-3 py-2 text-center text-[12px] font-semibold text-[#20592b]">Estás ahorrando {formatPrice(totals.savings)} en esta compra</p>}
     </dl>
   )
 }
 
 export default function Cart() {
-  const { cartLines, updateQty, removeFromCart, moveCartLineToList, clearCart, coupon, lists } = useStore()
+  const { cartLines, updateQty, removeFromCart, moveCartLineToList, clearCart, lists } = useStore()
   const navigate = useNavigate()
   const [confirmClear, setConfirmClear] = useState(false)
-  const totals = computeTotals(cartLines, { coupon })
+  const totals = computeTotals(cartLines)
   const saved = getProductsByIds(lists.find((l) => l.id === 'favoritos')?.items.map((i) => i.productId) ?? []).filter((p) => !cartLines.some((l) => l.productId === p.id)).slice(0, 4)
 
   return (
@@ -118,11 +74,9 @@ export default function Cart() {
 
           <aside className="space-y-4 border border-[#e6e6eb] bg-white p-5 lg:sticky lg:top-36" aria-label="Resumen del pedido">
             <h2 className="m-0 text-[18px] font-semibold tracking-[-.02em]">Resumen del pedido</h2>
-            <FreeShippingMeter subtotal={totals.subtotal} />
-            <CouponForm subtotal={totals.subtotal} />
-            <OrderSummary totals={totals} coupon={coupon} />
-            <button type="button" onClick={() => navigate(paths.checkout)} className={button('primary', 'h-12 w-full')}><Lock size={15} /> Continuar al pago</button>
-            <p className="text-center text-[11px] text-[#73757d]">Pago seguro · Tarjeta, PSE o contraentrega</p>
+            <OrderSummary totals={totals} />
+            <button type="button" onClick={() => navigate(paths.checkout)} className={button('primary', 'h-12 w-full')}><MessageCircle size={16} /> Hacer pedido por WhatsApp</button>
+            <p className="text-center text-[11px] text-[#73757d]">No pagas en la página: un asesor confirma tu pedido por WhatsApp.</p>
           </aside>
         </div>
       )}
