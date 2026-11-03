@@ -1,0 +1,71 @@
+name: Calidad del frontend
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Lint y build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Instalar dependencias
+        run: npm ci
+      - name: Revisar código
+        run: npm run lint
+      - name: Compilar frontend
+        run: npm run build
+
+  sonar:
+    name: SonarQube Cloud
+    needs: checks
+    # Sin las claves del proyecto, solo se ejecutan lint y build.
+    # Por defecto analiza develop y sus PR; otras ramas requieren un plan compatible.
+    if: >-
+      vars.SONAR_ORGANIZATION != '' &&
+      vars.SONAR_PROJECT_KEY != '' &&
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
+      (vars.SONAR_ALL_BRANCHES == 'true' ||
+       github.ref_name == (vars.SONAR_MAIN_BRANCH || 'develop') ||
+       github.base_ref == (vars.SONAR_MAIN_BRANCH || 'develop'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Comprobar secreto de Sonar
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          if [ -z "$SONAR_TOKEN" ]; then
+            echo "::error::Configura el secreto SONAR_TOKEN en Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+      - name: Analizar código y comprobar Quality Gate
+        uses: SonarSource/sonarqube-scan-action@v8.4.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >-
+            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
+            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
+            -Dsonar.qualitygate.wait=true
+            -Dsonar.qualitygate.timeout=300
