@@ -1,0 +1,34 @@
+/* Estilos complementarios del marketplace (animaciones y ajustes que no cubre Tailwind). */
+
+.mk-root {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: #222630;
+  background: #fafaf8;
+}
+
+.mk-root button { cursor: pointer; }
+.mk-root ::selection { background: var(--color-secundario); color: #fff; }
+.mk-root :where(a, button, input, select, textarea):focus-visible { outline: 3px solid var(--color-principal); outline-offset: 2px; }
+
+@keyframes mk-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes mk-pop-in { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes mk-slide-in { from { transform: translateX(100%); } to { transform: none; } }
+@keyframes mk-slide-in-left { from { transform: translateX(-100%); } to { transform: none; } }
+@keyframes mk-toast-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+.mk-fade { animation: mk-fade-in .18s ease-out; }
+.mk-pop { animation: mk-pop-in .22s cubic-bezier(.2, .8, .2, 1); }
+.mk-drawer { animation: mk-slide-in .28s cubic-bezier(.2, .8, .2, 1); }
+.mk-drawer-left { animation: mk-slide-in-left .28s cubic-bezier(.2, .8, .2, 1); }
+.mk-toast { animation: mk-toast-in .25s ease-out; }
+
+.mk-scroll-x { scrollbar-width: thin; scroll-snap-type: x mandatory; }
+.mk-scroll-x > * { scroll-snap-align: start; }
+
+.mk-range { -webkit-appearance: none; appearance: none; background: transparent; pointer-events: none; }
+.mk-range::-webkit-slider-thumb { -webkit-appearance: none; pointer-events: auto; width: 18px; height: 18px; border-radius: 50%; background: #fff; border: 2px solid var(--color-secundario); cursor: pointer; }
+.mk-range::-moz-range-thumb { pointer-events: auto; width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 2px solid var(--color-secundario); cursor: pointer; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mk-root *, .mk-root *::before, .mk-root *::after { animation: none !important; transition: none !important; }
+}
