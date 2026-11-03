@@ -122,7 +122,7 @@ function Reviews({ product }) {
 
 function DetailSkeleton() {
   return (
-    <div className="mx-auto grid max-w-[1280px] gap-10 px-5 py-10 lg:grid-cols-2">
+    <div className="grid w-full gap-10 px-5 lg:px-10 2xl:px-14 py-10 lg:grid-cols-2">
       <Skeleton className="aspect-[4/3]" />
       <div className="space-y-4"><Skeleton className="h-3 w-24" /><Skeleton className="h-10 w-4/5" /><Skeleton className="h-4 w-40" /><Skeleton className="h-10 w-48" /><Skeleton className="h-28 w-full" /><Skeleton className="h-12 w-full" /></div>
     </div>
@@ -160,7 +160,7 @@ function ProductView({ product }) {
 
   return (
     <>
-      <div className="mx-auto max-w-[1280px] px-5 pb-24 pt-8 lg:pb-8">
+      <div className="w-full px-5 lg:px-10 2xl:px-14 pb-24 pt-8 lg:pb-8">
         <Breadcrumbs items={[{ label: 'Inicio', to: paths.home }, { label: product.categoryName, to: paths.category(product.category) }, { label: product.name }]} />
 
         <div className="grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-14">
@@ -296,7 +296,7 @@ export default function ProductDetail() {
   if (loading && product?.slug !== slug) return <DetailSkeleton />
   if (!product) {
     return (
-      <div className="mx-auto max-w-[1280px] px-5 py-16">
+      <div className="w-full px-5 lg:px-10 2xl:px-14 py-16">
         <EmptyState icon={PackageX} title="Producto no encontrado" action={<Link to={paths.catalog()} className={button('primary')}>Ir al catálogo</Link>}>
           Es posible que el producto ya no esté disponible o que el enlace sea incorrecto.
         </EmptyState>

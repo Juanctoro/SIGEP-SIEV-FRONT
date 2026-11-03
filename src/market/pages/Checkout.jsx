@@ -96,7 +96,7 @@ export default function Checkout() {
 
   if (cartLines.length === 0 && !submitting) {
     return (
-      <div className="mx-auto max-w-[1280px] px-5 py-16">
+      <div className="w-full px-5 lg:px-10 2xl:px-14 py-16">
         <EmptyState icon={ShoppingCart} title="No hay productos para pagar" action={<Link to={paths.catalog()} className={button('primary')}>Ir al catálogo</Link>}>Agrega productos a tu carrito para continuar con la compra.</EmptyState>
       </div>
     )
@@ -136,7 +136,7 @@ export default function Checkout() {
   const shippingCost = (id) => (id === 'tienda' ? 'Gratis' : id === 'express' ? formatPrice(shippingRules.express) : totals.subtotal >= shippingRules.freeFrom || coupon?.type === 'shipping' ? 'Gratis' : formatPrice(shippingRules.standard))
 
   return (
-    <div className="mx-auto max-w-[1280px] px-5 py-8">
+    <div className="w-full px-5 lg:px-10 2xl:px-14 py-8">
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <h1 className="m-0 text-[clamp(28px,3.2vw,40px)] font-semibold tracking-[-.045em]">Finalizar compra</h1>
         <p className="m-0 flex items-center gap-2 text-[12px] text-[#626570]"><Lock size={14} className="text-[#2f7a3d]" /> Pago protegido · Modo demostración</p>

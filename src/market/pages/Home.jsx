@@ -12,7 +12,7 @@ import { getHomeSections, getProductsByIds } from '../services/catalogService'
 import { useAsync } from '../lib/useAsync'
 import { paths } from '../routes'
 
-const container = 'mx-auto max-w-[1280px] px-5'
+const container = 'w-full px-5 lg:px-10 2xl:px-14'
 const hero = products.find((p) => p.id === 'p002')
 
 function Hero() {
@@ -80,7 +80,7 @@ function Carousel({ items }) {
   const scroll = (dir) => ref.current?.scrollBy({ left: dir * ref.current.clientWidth * 0.8, behavior: 'smooth' })
   return (
     <div className="relative">
-      <div ref={ref} className="mk-scroll-x -mx-5 flex gap-4 overflow-x-auto px-5 pb-4">
+      <div ref={ref} className="mk-scroll-x -mx-5 flex gap-4 overflow-x-auto px-5 pb-4 lg:-mx-10 lg:px-10 2xl:-mx-14 2xl:px-14">
         {items.map((p) => <div key={p.id} className="w-[250px] shrink-0 sm:w-[270px]"><ProductCard product={p} /></div>)}
       </div>
       <div className="mt-2 hidden justify-end gap-2 sm:flex">

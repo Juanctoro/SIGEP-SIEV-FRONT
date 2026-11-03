@@ -74,7 +74,7 @@ export default function Cart() {
   const saved = getProductsByIds(lists.find((l) => l.id === 'favoritos')?.items.map((i) => i.productId) ?? []).filter((p) => !cartLines.some((l) => l.productId === p.id)).slice(0, 4)
 
   return (
-    <div className="mx-auto max-w-[1280px] px-5 py-8">
+    <div className="w-full px-5 lg:px-10 2xl:px-14 py-8">
       <Breadcrumbs items={[{ label: 'Inicio', to: paths.home }, { label: 'Carrito' }]} />
       <h1 className="mb-8 text-[clamp(28px,3.2vw,42px)] font-semibold tracking-[-.045em]">Carrito de compras</h1>
 

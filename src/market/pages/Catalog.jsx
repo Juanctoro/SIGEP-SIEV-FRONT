@@ -162,7 +162,7 @@ export default function Catalog() {
   const title = filters.q ? `Resultados para “${filters.q}”` : category ? category.name : filters.onSale ? 'Ofertas' : 'Todos los productos'
 
   return (
-    <div className="mx-auto max-w-[1280px] px-5 py-8">
+    <div className="w-full px-5 lg:px-10 2xl:px-14 py-8">
       <Breadcrumbs items={[{ label: 'Inicio', to: paths.home }, category ? { label: 'Catálogo', to: paths.catalog() } : null, { label: category?.name ?? (filters.q ? 'Búsqueda' : 'Catálogo') }].filter(Boolean)} />
 
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-[#e2e2e8] pb-6">
@@ -201,14 +201,14 @@ export default function Catalog() {
 
         <section aria-label="Resultados" className={cx('transition-opacity', loading && data && 'opacity-60')}>
           {!data ? (
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-3">{Array.from({ length: 6 }, (_, i) => <ProductCardSkeleton key={i} />)}</div>
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-3 2xl:grid-cols-4 min-[1900px]:grid-cols-5">{Array.from({ length: 6 }, (_, i) => <ProductCardSkeleton key={i} />)}</div>
           ) : data.items.length === 0 ? (
             <EmptyState icon={SearchX} title="No encontramos productos" action={<Link to={paths.catalog()} className={button('primary')}>Ver todo el catálogo</Link>}>
               Prueba con otras palabras o quita algunos filtros para ver más resultados.
             </EmptyState>
           ) : (
             <>
-              <div className={view === 'list' ? 'grid gap-4' : 'grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-3'}>
+              <div className={view === 'list' ? 'grid gap-4' : 'grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-3 2xl:grid-cols-4 min-[1900px]:grid-cols-5'}>
                 {data.items.map((p) => <ProductCard key={p.id} product={p} layout={view} />)}
               </div>
               <Pagination page={data.page} totalPages={data.totalPages} onChange={(n) => { update({ pagina: n === 1 ? '' : n }, { resetPage: false }); window.scrollTo({ top: 0, behavior: 'smooth' }) }} />

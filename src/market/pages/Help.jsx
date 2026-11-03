@@ -20,7 +20,7 @@ const faqs = [
 export default function Help() {
   return (
     <>
-      <div className="mx-auto max-w-[1280px] px-5 py-8">
+      <div className="w-full px-5 lg:px-10 2xl:px-14 py-8">
         <Breadcrumbs items={[{ label: 'Inicio', to: paths.home }, { label: 'Ayuda' }]} />
         <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
           <div>

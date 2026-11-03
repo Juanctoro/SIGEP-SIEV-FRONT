@@ -125,14 +125,14 @@ export default function Header() {
   return (
     <>
       <div className="bg-secundario text-[11px] text-[#e3e4ff]">
-        <div className="mx-auto flex max-w-[1280px] items-center justify-center gap-6 px-5 py-2 sm:justify-between">
+        <div className="flex w-full items-center justify-center gap-6 px-5 lg:px-10 2xl:px-14 py-2 sm:justify-between">
           <p className="m-0"><span className="text-principal">ϟ</span> Envío gratis en compras desde {formatPrice(299900)}</p>
           <p className="m-0 hidden gap-6 sm:flex"><span>12 cuotas sin interés</span><span>Garantía oficial</span><Link to={paths.help} className="underline-offset-2 hover:underline">Ayuda</Link></p>
         </div>
       </div>
 
       <header className="sticky top-0 z-40 border-b border-[#e9e9ed] bg-white/95 backdrop-blur-md">
-        <div className="mx-auto flex max-w-[1280px] items-center gap-4 px-5 py-3 lg:gap-8">
+        <div className="flex w-full items-center gap-4 px-5 lg:px-10 2xl:px-14 py-3 lg:gap-8">
           <button type="button" className="grid size-10 place-items-center text-secundario lg:hidden" aria-label="Abrir menú" onClick={() => setMenuOpen(true)}><Menu size={24} /></button>
           <Link to={paths.home} className="flex shrink-0 items-center gap-3" aria-label="Tienda SIEV, ir al inicio">
             <img src={logo} alt="SIEV" className="h-11 w-auto object-contain sm:h-12" />
@@ -151,7 +151,7 @@ export default function Header() {
         <div className="px-5 pb-3 md:hidden"><SearchBox /></div>
 
         <div className="hidden border-t border-[#efeff2] lg:block">
-          <div className="mx-auto flex max-w-[1280px] items-center gap-7 px-5 text-[13px] font-semibold">
+          <div className="flex w-full items-center gap-7 px-5 lg:px-10 2xl:px-14 text-[13px] font-semibold">
             <div ref={megaRef} className="relative">
               <button type="button" aria-expanded={megaOpen} aria-controls="mega-menu" onClick={() => setMegaOpen((o) => !o)}
                 className={cx('flex items-center gap-2 py-3 transition', megaOpen ? 'text-principal' : 'text-secundario hover:text-principal')}>

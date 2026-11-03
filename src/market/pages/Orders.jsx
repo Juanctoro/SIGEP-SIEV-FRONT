@@ -115,7 +115,7 @@ export default function Orders() {
   const order = orderId ? orders.find((o) => o.id === orderId) : null
 
   return (
-    <div className="mx-auto max-w-[1280px] px-5 py-8">
+    <div className="w-full px-5 lg:px-10 2xl:px-14 py-8">
       <Breadcrumbs items={[{ label: 'Inicio', to: paths.home }, { label: 'Mis pedidos', to: orderId ? paths.orders : undefined }, orderId ? { label: orderId } : null].filter(Boolean)} />
       {orderId ? (
         order ? <OrderDetail order={order} /> : <EmptyState icon={Package} title="Pedido no encontrado" action={<Link to={paths.orders} className={button('primary')}>Ver mis pedidos</Link>}>No encontramos un pedido con ese número en este navegador.</EmptyState>

@@ -57,7 +57,7 @@ export default function Lists() {
   }
 
   return (
-    <div className="mx-auto max-w-[1280px] px-5 py-8">
+    <div className="w-full px-5 lg:px-10 2xl:px-14 py-8">
       <Breadcrumbs items={[{ label: 'Inicio', to: paths.home }, { label: 'Mis listas', to: paths.lists }, list && list.id !== 'favoritos' ? { label: list.name } : null].filter(Boolean)} />
       <h1 className="mb-8 text-[clamp(28px,3.2vw,42px)] font-semibold tracking-[-.045em]">Mis listas</h1>
 

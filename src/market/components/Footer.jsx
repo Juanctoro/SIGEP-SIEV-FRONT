@@ -19,7 +19,7 @@ const benefits = [
 export function BenefitsStrip() {
   return (
     <section aria-label="Beneficios" className="border-y border-[#e6e6eb] bg-white">
-      <div className="mx-auto grid max-w-[1280px] grid-cols-2 lg:grid-cols-4">
+      <div className="grid w-full grid-cols-2 lg:grid-cols-4">
         {benefits.map(({ icon: Icon, title, text }, i) => (
           <div key={title} className={`flex items-center gap-4 px-5 py-6 ${i % 2 ? '' : 'border-r'} border-[#ececf0] lg:border-r lg:last:border-r-0 ${i < 2 ? 'border-b lg:border-b-0' : ''}`}>
             <span className="grid size-11 shrink-0 place-items-center bg-[#f6f0ed] text-principal"><Icon size={20} /></span>
@@ -46,7 +46,7 @@ export default function Footer() {
 
   return (
     <footer className="mt-20 bg-secundario text-[#d4d6ef]">
-      <div className="mx-auto grid max-w-[1280px] gap-10 px-5 py-14 md:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1.3fr]">
+      <div className="grid w-full gap-10 px-5 lg:px-10 2xl:px-14 py-14 md:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1.3fr]">
         <div>
           <span className="inline-block bg-white p-2"><img src={logo} alt="SIEV" className="h-12" /></span>
           <p className="mt-5 max-w-xs text-[13px] leading-relaxed">Tecnología para tu hogar y tu empresa, con el respaldo de Soluciones Integrales Eléctricas del Valle S.A.S.</p>
@@ -80,7 +80,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="border-t border-white/15">
-        <div className="mx-auto flex max-w-[1280px] flex-col justify-between gap-2 px-5 py-5 text-[11px] text-[#aeb1d6] sm:flex-row">
+        <div className="flex w-full flex-col justify-between gap-2 px-5 lg:px-10 2xl:px-14 py-5 text-[11px] text-[#aeb1d6] sm:flex-row">
           <p className="m-0">© {year} SIEV S.A.S. · Tienda de tecnología</p>
           <p className="m-0">Sitio de demostración · Productos, precios e inventario ilustrativos</p>
         </div>
