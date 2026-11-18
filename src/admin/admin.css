@@ -1,0 +1,32 @@
+/* Panel de administración. Igual que la tienda, devuelve h1/h2/h3/p a las capas de
+   Tailwind porque src/index.css los estiliza sin capa para la landing. */
+.adm-root {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: #1f2230;
+  background: #f4f5f9;
+}
+.adm-root :is(h1, h2, h3, p, em) {
+  font-size: revert-layer;
+  font-weight: revert-layer;
+  font-style: revert-layer;
+  line-height: revert-layer;
+  letter-spacing: revert-layer;
+  margin-top: revert-layer;
+  margin-bottom: revert-layer;
+}
+
+@keyframes adm-slide-in { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes adm-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes adm-pop { from { transform: translateY(6px) scale(.98); opacity: 0; } to { transform: none; opacity: 1; } }
+.adm-slide-in { animation: adm-slide-in .22s cubic-bezier(.2, .8, .2, 1); }
+.adm-fade-in { animation: adm-fade-in .18s ease-out; }
+.adm-pop { animation: adm-pop .18s ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  .adm-slide-in, .adm-fade-in, .adm-pop { animation: none; }
+}
+
+/* Inputs numéricos sin flechas: los valores de dinero se escriben, no se incrementan. */
+.adm-root input[type='number']::-webkit-inner-spin-button,
+.adm-root input[type='number']::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.adm-root input[type='number'] { -moz-appearance: textfield; appearance: textfield; }
