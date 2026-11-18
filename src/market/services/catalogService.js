@@ -1,13 +1,25 @@
 // Capa de servicios del marketplace.
-// Hoy responde con datos locales (mock). Para conectar el backend, reemplazar el
-// cuerpo de cada función por la petición HTTP correspondiente y conservar la forma
-// de la respuesta para no tener que cambiar las páginas.
+// El catálogo se descarga una vez del endpoint público GET /api/store/products/
+// (loadCatalog) y la búsqueda, filtros y orden se resuelven en el navegador.
 
-import { brands, categories, products } from '../data/catalog'
+import { api } from '../../lib/api'
+import { brands, categories, products, setCatalog } from '../data/catalog'
 import { generateReviews, ratingDistribution } from '../data/reviews'
 
-const LATENCY = 220
-const wait = (ms = LATENCY) => new Promise((resolve) => setTimeout(resolve, ms))
+
+let catalogPromise = null
+/** Descarga el catálogo público. Se reutiliza la misma petición; tras un error se puede reintentar. */
+export function loadCatalog() {
+  catalogPromise ??= api('/api/store/products/', { auth: false })
+    .then((list) => { setCatalog(list) })
+    .catch((error) => { catalogPromise = null; throw error })
+  return catalogPromise
+}
+
+/** Fuerza a descargar de nuevo el catálogo la próxima vez que se entre a la tienda. */
+export function invalidateCatalog() {
+  catalogPromise = null
+}
 
 export const discountPercent = (product) =>
   product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : 0
@@ -40,10 +52,10 @@ export const sortOptions = [
 
 /**
  * Búsqueda con filtros, orden y paginación.
- * Equivalente esperado en backend: GET /api/productos?q=&categoria=&marcas=&min=&max=&calificacion=&disponible=&oferta=&orden=&pagina=&tamano=
+ * Se resuelve en el navegador sobre el catálogo cargado (pocos productos). Si crece, mover a
+ * GET /api/store/products/?search=&category= y paginar en el backend.
  */
 export async function searchProducts({ q = '', category = '', brands: brandFilter = [], min = null, max = null, rating = 0, inStock = false, onSale = false, sort = 'relevancia', page = 1, pageSize = 12 } = {}) {
-  await wait()
   const base = products.filter((p) => matchesQuery(p, q) && (!category || p.category === category))
 
   const filtered = base.filter((p) =>
@@ -81,25 +93,24 @@ export async function searchProducts({ q = '', category = '', brands: brandFilte
   }
 }
 
-/** GET /api/productos/:slug */
+/** Producto por slug (desde el catálogo cargado). */
 export async function getProductBySlug(slug) {
-  await wait()
   const product = products.find((p) => p.slug === slug)
   if (!product) return null
+  // Productos sin reseñas reales: no se generan reseñas de demostración.
+  if (!product.reviews) return { ...product, reviewList: [], distribution: [5, 4, 3, 2, 1].map((stars) => ({ stars, count: 0 })) }
   return { ...product, reviewList: generateReviews(product), distribution: ratingDistribution(product) }
 }
 
-/** GET /api/productos/:id/relacionados */
+/** Relacionados: misma categoría y luego misma marca. */
 export async function getRelatedProducts(product, limit = 4) {
-  await wait(120)
   const sameCategory = products.filter((p) => p.category === product.category && p.id !== product.id)
   const others = products.filter((p) => p.category !== product.category && p.brand === product.brand)
   return [...sameCategory, ...others].slice(0, limit)
 }
 
-/** GET /api/inicio — secciones destacadas de la tienda */
+/** Secciones destacadas de la tienda. */
 export async function getHomeSections() {
-  await wait(150)
   return {
     deals: [...products].filter((p) => p.oldPrice && p.stock > 0).sort(sorters.descuento).slice(0, 8),
     bestSellers: [...products].sort(sorters.relevancia).slice(0, 8),

@@ -1,8 +1,26 @@
-import { useId } from 'react'
+import { useId, useState } from 'react'
+import { Zap } from 'lucide-react'
+import { DEFAULT_IMAGE } from '../data/fallbackImages'
 
-// Ilustraciones vectoriales de los productos (marcador de posición).
-// Siguen el estilo de líneas técnicas de la landing. Cuando el backend entregue
-// imágenes reales, ProductImage puede mostrar la foto y usar este arte como respaldo.
+// Imagen del producto. `type` puede ser una URL (imagen subida o pública de respaldo)
+// o, por compatibilidad, el nombre de una ilustración vectorial de abajo.
+// Cadena de respaldo para URLs: imagen → imagen pública genérica → marcador local.
+
+const isUrl = (value) => typeof value === 'string' && /^(?:https?:|\/|data:|blob:)/.test(value)
+
+function ProductImage({ src, className, label }) {
+  const [attempt, setAttempt] = useState(0)
+  const sources = src === DEFAULT_IMAGE ? [src] : [src, DEFAULT_IMAGE]
+  const current = sources[attempt]
+  if (!current) {
+    return (
+      <span role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : true} className={`grid h-full w-full place-items-center bg-[#eeeff7] text-secundario ${className}`}>
+        <Zap size={36} strokeWidth={1.5} />
+      </span>
+    )
+  }
+  return <img src={current} alt={label ?? ''} loading="lazy" decoding="async" referrerPolicy="no-referrer" onError={() => setAttempt((n) => n + 1)} className={`block h-full w-full object-cover ${className}`} />
+}
 
 const INK = '#222630'
 
@@ -197,7 +215,12 @@ function gamepad(body, tone, s) {
 /**
  * view: 0 = frontal, 1 = detalle (acercamiento), 2 = plano técnico con medidas, 3 = colores disponibles.
  */
-export default function ProductArt({ type, color = '#24262e', colors = [], view = 0, className = '', label, grid = true }) {
+export default function ProductArt(props) {
+  if (isUrl(props.type)) return <ProductImage key={props.type} src={props.type} className={props.className ?? ''} label={props.label} />
+  return <VectorArt {...props} />
+}
+
+function VectorArt({ type, color = '#24262e', colors = [], view = 0, className = '', label, grid = true }) {
   const id = useId().replace(/:/g, '')
   const tone = isLight(color) ? 'rgba(34,38,48,.14)' : 'rgba(255,255,255,.16)'
   const zoom = view === 1 ? 'translate(-120 -80) scale(1.6)' : undefined
