@@ -13,19 +13,21 @@ import { useAsync } from '../lib/useAsync'
 import { paths } from '../routes'
 
 const container = 'w-full px-5 lg:px-10 2xl:px-14'
-const hero = products.find((p) => p.id === 'p002')
+// Destacado: el producto de mayor precio con stock (o el primero si no hay stock).
+const pickHero = () => [...products].filter((p) => p.stock > 0).sort((a, b) => b.price - a.price)[0] ?? products[0]
 
 function Hero() {
+  const hero = pickHero()
   return (
     <section className="bg-[#fafaf8]">
       <div className={`${container} grid items-center gap-10 py-12 lg:grid-cols-[1.05fr_1fr] lg:py-16`}>
         <div>
-          <Eyebrow>Temporada de tecnología</Eyebrow>
+          <Eyebrow>Materiales eléctricos</Eyebrow>
           <h1 className="mb-6 text-[clamp(40px,5vw,64px)] font-semibold leading-[1.05] tracking-[-.055em]">
-            Tecnología que <span className="text-principal">conecta</span><br />con tu día a día.
+            Todo para tu <span className="text-principal">proyecto</span><br />eléctrico.
           </h1>
           <p className="mb-8 max-w-md text-[16px] leading-[1.75] text-[#61636d]">
-            Televisores, computadores, celulares y accesorios de las mejores marcas, con envío a todo el país y garantía oficial.
+            Cables, protección, automatización, iluminación y canalización de marcas reconocidas, con asesoría técnica de SIEV.
           </p>
           <div className="flex flex-wrap items-center gap-6">
             <Link to={paths.catalog()} className={button('primary', 'gap-7 px-6 py-4')}>Explorar catálogo <ArrowUpRight size={16} /></Link>
@@ -38,7 +40,7 @@ function Hero() {
           </dl>
         </div>
 
-        <Link to={paths.product(hero.slug)} className="group relative block bg-secundario p-6 text-[#e3e4ff]">
+        {hero && <Link to={paths.product(hero.slug)} className="group relative block bg-secundario p-6 text-[#e3e4ff]">
           <div className="flex justify-between text-[9px] tracking-[.16em]"><span>SIEV / DESTACADO DE LA SEMANA</span><span>01 — 04</span></div>
           <div className="my-3 aspect-[4/3] bg-[#f6f6f4] transition duration-500 group-hover:bg-white">
             <ProductArt type={hero.art} color={hero.colors[0].hex} />
@@ -47,11 +49,11 @@ function Hero() {
             <span className="text-[38px] leading-none text-principal" aria-hidden="true">ϟ</span>
             <div className="flex-1">
               <strong className="block text-[15px] font-medium text-white">{hero.brand} {hero.name}</strong>
-              <span className="text-[12px] opacity-75">Desde ${hero.price.toLocaleString('es-CO')} · Ahorra {Math.round((1 - hero.price / hero.oldPrice) * 100)} %</span>
+              <span className="text-[12px] opacity-75">${hero.price.toLocaleString('es-CO')} · {hero.unit}</span>
             </div>
             <ArrowUpRight size={20} className="transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
           </div>
-        </Link>
+        </Link>}
       </div>
     </section>
   )
@@ -91,29 +93,30 @@ function Carousel({ items }) {
   )
 }
 
+// Dos categorías destacadas; si no existen en el catálogo se usan las dos primeras.
+const promos = [
+  { id: 'automatizacion', eyebrow: 'Automatización', title: 'Controla tus procesos', text: 'PLC, variadores de frecuencia y módulos lógicos para tableros e industria.', dark: true },
+  { id: 'iluminacion', eyebrow: 'Iluminación LED', title: 'Luz eficiente y segura', text: 'Luminarias herméticas y de emergencia para bodegas, plantas y zonas húmedas.', dark: false },
+]
+
 function PromoBanners() {
-  const a = products.find((p) => p.id === 'p008')
-  const b = products.find((p) => p.id === 'p025')
+  const items = promos
+    .map((promo, i) => ({ ...promo, category: categories.find((c) => c.id === promo.id) ?? categories[i] }))
+    .filter((promo) => promo.category)
+  if (!items.length) return null
   return (
-    <section className={`${container} grid gap-5 py-6 md:grid-cols-2`} aria-label="Promociones">
-      <Link to={paths.category('gaming')} className="group relative grid min-h-[240px] grid-cols-[1.1fr_1fr] items-center overflow-hidden bg-[#222630] p-7 text-white">
-        <div>
-          <p className="mb-3 text-[11px] font-bold uppercase tracking-[.18em] text-principal">Zona gamer</p>
-          <h3 className="mb-3 text-[26px] font-semibold leading-tight tracking-[-.04em]">Sube de nivel tu setup</h3>
-          <p className="mb-5 text-[13px] text-white/70">Portátiles RTX, consolas y periféricos con hasta 18 % de descuento.</p>
-          <span className="inline-flex items-center gap-2 text-[13px] font-semibold">Comprar ahora <ArrowRight size={15} className="transition group-hover:translate-x-1" /></span>
-        </div>
-        <ProductArt type={a.art} color="#4a4d57" grid={false} className="transition duration-500 group-hover:scale-105" />
-      </Link>
-      <Link to={paths.category('audio')} className="group relative grid min-h-[240px] grid-cols-[1.1fr_1fr] items-center overflow-hidden bg-[#f6eee9] p-7">
-        <div>
-          <p className="mb-3 text-[11px] font-bold uppercase tracking-[.18em] text-principal">Audio premium</p>
-          <h3 className="mb-3 text-[26px] font-semibold leading-tight tracking-[-.04em] text-secundario">Escucha cada detalle</h3>
-          <p className="mb-5 text-[13px] text-[#626570]">Cancelación de ruido, parlantes y barras de sonido para tu hogar.</p>
-          <span className="inline-flex items-center gap-2 text-[13px] font-semibold text-secundario">Descubrir <ArrowRight size={15} className="transition group-hover:translate-x-1" /></span>
-        </div>
-        <ProductArt type={b.art} color={b.colors[2].hex} className="transition duration-500 group-hover:scale-105" />
-      </Link>
+    <section className={`${container} grid gap-5 py-6 md:grid-cols-2`} aria-label="Categorías destacadas">
+      {items.map(({ id, eyebrow, title, text, dark, category }) => (
+        <Link key={id} to={paths.category(category.id)} className={`group relative grid min-h-[240px] grid-cols-[1.1fr_1fr] items-center gap-6 overflow-hidden p-7 ${dark ? 'bg-[#222630] text-white' : 'bg-[#f6eee9]'}`}>
+          <div>
+            <p className="mb-3 text-[11px] font-bold uppercase tracking-[.18em] text-principal">{eyebrow}</p>
+            <h3 className={`mb-3 text-[26px] font-semibold leading-tight tracking-[-.04em] ${dark ? '' : 'text-secundario'}`}>{title}</h3>
+            <p className={`mb-5 text-[13px] ${dark ? 'text-white/70' : 'text-[#626570]'}`}>{text}</p>
+            <span className={`inline-flex items-center gap-2 text-[13px] font-semibold ${dark ? '' : 'text-secundario'}`}>Ver productos <ArrowRight size={15} className="transition group-hover:translate-x-1" /></span>
+          </div>
+          <span className="block aspect-[4/3] overflow-hidden"><ProductArt type={category.art} className="transition duration-500 group-hover:scale-105" /></span>
+        </Link>
+      ))}
     </section>
   )
 }
@@ -147,7 +150,8 @@ export default function Home() {
       <BenefitsStrip />
       <CategoryGrid />
 
-      <section className="bg-white py-16" aria-labelledby="deals-title">
+      {/* Las ofertas aparecen solo cuando algún producto tiene precio anterior. */}
+      {(loading || data?.deals.length > 0) && <section className="bg-white py-16" aria-labelledby="deals-title">
         <div className={container}>
           <SectionHeading
             eyebrow="02 / Ofertas del día"
@@ -156,12 +160,12 @@ export default function Home() {
           />
           {loading ? <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">{[0, 1, 2, 3].map((i) => <ProductCardSkeleton key={i} />)}</div> : <Carousel items={data.deals} />}
         </div>
-      </section>
+      </section>}
 
       <PromoBanners />
 
       <section className={`${container} py-16`} aria-labelledby="best-title">
-        <SectionHeading eyebrow="03 / Más vendidos" title={<span id="best-title">Los favoritos de nuestros clientes.</span>} action={<Link to={paths.catalog({ orden: 'relevancia' })} className="inline-flex items-center gap-2 text-[13px] font-semibold text-secundario hover:underline">Ver más <ArrowRight size={15} /></Link>} />
+        <SectionHeading eyebrow="03 / Destacados" title={<span id="best-title">Materiales para tu próxima obra.</span>} action={<Link to={paths.catalog()} className="inline-flex items-center gap-2 text-[13px] font-semibold text-secundario hover:underline">Ver más <ArrowRight size={15} /></Link>} />
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {loading ? Array.from({ length: 8 }, (_, i) => <ProductCardSkeleton key={i} />) : data.bestSellers.map((p) => <ProductCard key={p.id} product={p} />)}
         </div>

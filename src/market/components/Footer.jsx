@@ -50,7 +50,7 @@ export default function Footer() {
       <div className="grid w-full gap-10 px-5 lg:px-10 2xl:px-14 py-14 md:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1.3fr]">
         <div>
           <span className="inline-block bg-white p-2"><img src={logo} alt="SIEV" className="h-12" /></span>
-          <p className="mt-5 max-w-xs text-[13px] leading-relaxed">Tecnología para tu hogar y tu empresa, con el respaldo de Soluciones Integrales Eléctricas del Valle S.A.S.</p>
+          <p className="mt-5 max-w-xs text-[13px] leading-relaxed">Materiales eléctricos para tu obra y tu empresa, con el respaldo de Soluciones Integrales Eléctricas del Valle S.A.S.</p>
           <p className="mt-4 flex items-center gap-2 text-[13px]"><Headset size={16} className="text-principal" /> <a href={`https://wa.me/${storeWhatsapp}`} target="_blank" rel="noopener noreferrer" className="hover:text-white">{storePhone}</a> · WhatsApp</p>
         </div>
         <div>
@@ -83,7 +83,7 @@ export default function Footer() {
       </div>
       <div className="border-t border-white/15">
         <div className="flex w-full flex-col justify-between gap-2 px-5 lg:px-10 2xl:px-14 py-5 text-[11px] text-[#aeb1d6] sm:flex-row">
-          <p className="m-0">© {year} SIEV S.A.S. · Tienda de tecnología</p>
+          <p className="m-0">© {year} SIEV S.A.S. · Tienda de materiales eléctricos</p>
           <p className="m-0">Sitio de demostración · Productos, precios e inventario ilustrativos</p>
         </div>
       </div>

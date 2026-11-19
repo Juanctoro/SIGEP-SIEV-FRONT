@@ -4,6 +4,7 @@ import MarketRoutes from './market/MarketApp'
 import { AuthProvider } from './auth/AuthContext'
 import AuthPage from './auth/AuthPage'
 import AccountPage from './auth/AccountPage'
+import AdminRoutes from './admin/AdminApp'
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
         <Route path="/registro" element={<AuthPage key="register" mode="register" />} />
         <Route path="/cuenta" element={<AccountPage />} />
         <Route path="/tienda/*" element={<MarketRoutes />} />
+        <Route path="/admin/*" element={<AdminRoutes />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       </AuthProvider>

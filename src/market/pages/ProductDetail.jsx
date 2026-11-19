@@ -17,6 +17,16 @@ const views = ['Vista frontal', 'Detalle', 'Medidas', 'Colores']
 
 function Gallery({ product, color }) {
   const [view, setView] = useState(0)
+  // Producto con foto (subida o pública de respaldo): una sola imagen, sin vistas ilustradas.
+  if (/^(?:https?:|\/)/.test(product.art)) {
+    return (
+      <div className="lg:sticky lg:top-36 lg:self-start">
+        <div className="relative aspect-[4/3] overflow-hidden border border-[#e6e6eb] bg-[#f3f3f0]">
+          <ProductArt type={product.art} label={product.name} />
+        </div>
+      </div>
+    )
+  }
   return (
     <div className="lg:sticky lg:top-36 lg:self-start">
       <div className="relative aspect-[4/3] border border-[#e6e6eb] bg-[#f3f3f0]">
@@ -62,14 +72,14 @@ function Reviews({ product }) {
   return (
     <div className="grid gap-10 lg:grid-cols-[300px_1fr]">
       <div>
-        <p className="m-0 text-[52px] font-semibold leading-none tracking-[-.05em]">{product.rating.toFixed(1)}</p>
+        <p className="m-0 text-[52px] font-semibold leading-none tracking-[-.05em]">{product.reviews ? product.rating.toFixed(1) : '—'}</p>
         <div className="my-2"><Rating value={product.rating} size={18} /></div>
-        <p className="mb-5 text-[13px] text-[#626570]">{plural(total, 'reseña')}</p>
+        <p className="mb-5 text-[13px] text-[#626570]">{total ? plural(total, 'reseña') : 'Aún no hay reseñas. ¡Sé el primero en opinar!'}</p>
         <ul className="space-y-1.5">
           {product.distribution.map((d) => (
             <li key={d.stars} className="flex items-center gap-3 text-[12px]">
               <span className="w-8">{d.stars} ★</span>
-              <span className="h-1.5 flex-1 bg-[#ececf0]"><span className="block h-full bg-principal" style={{ width: `${(d.count / product.reviews) * 100}%` }} /></span>
+              <span className="h-1.5 flex-1 bg-[#ececf0]"><span className="block h-full bg-principal" style={{ width: `${product.reviews ? (d.count / product.reviews) * 100 : 0}%` }} /></span>
               <span className="w-8 text-right text-[#73757d]">{d.count}</span>
             </li>
           ))}
@@ -184,7 +194,7 @@ function ProductView({ product }) {
               <p className="mt-2 text-[13px] text-[#626570]">Haz tu pedido y te confirmamos <strong>disponibilidad, envío y forma de pago</strong> por WhatsApp.</p>
             </div>
 
-            <fieldset className="mb-5">
+            {product.colors.length > 1 && <fieldset className="mb-5">
               <legend className="mb-2.5 text-[12px] font-semibold">Color: <span className="font-normal text-[#626570]">{color.name}</span></legend>
               <div className="flex flex-wrap gap-2.5">
                 {product.colors.map((c) => (
@@ -194,7 +204,7 @@ function ProductView({ product }) {
                   </button>
                 ))}
               </div>
-            </fieldset>
+            </fieldset>}
 
             {product.options && (
               <fieldset className="mb-5">
@@ -231,7 +241,7 @@ function ProductView({ product }) {
             <ul className="divide-y divide-[#e6e6eb] border border-[#e6e6eb] bg-white text-[13px]">
               <li className="flex gap-3 p-4"><Truck size={18} className="mt-0.5 shrink-0 text-principal" /><span><strong className="block font-semibold">Envío a domicilio</strong><span className="text-[#626570]">Coordinamos contigo la fecha y el costo del envío por WhatsApp.</span></span></li>
               <li className="flex gap-3 p-4"><Store size={18} className="mt-0.5 shrink-0 text-principal" /><span><strong className="block font-semibold">Recoge sin costo en el punto de venta</strong><span className="text-[#626570]">{storeAddress}</span></span></li>
-              <li className="flex gap-3 p-4"><ShieldCheck size={18} className="mt-0.5 shrink-0 text-principal" /><span><strong className="block font-semibold">{product.specs.Garantía ?? '1 año de garantía'}</strong><span className="text-[#626570]">Producto nuevo, sellado y con factura electrónica.</span></span></li>
+              <li className="flex gap-3 p-4"><ShieldCheck size={18} className="mt-0.5 shrink-0 text-principal" /><span><strong className="block font-semibold">{product.specs.Garantía ?? 'Garantía del fabricante'}</strong><span className="text-[#626570]">Producto nuevo, sellado y con factura electrónica.</span></span></li>
             </ul>
           </div>
         </div>
@@ -259,7 +269,7 @@ function ProductView({ product }) {
               <table className="w-full max-w-3xl border-collapse text-[14px]">
                 <caption className="sr-only">Especificaciones técnicas</caption>
                 <tbody>
-                  {[['Marca', product.brand], ['Referencia', product.sku], ...Object.entries(product.specs), ['Colores', product.colors.map((c) => c.name).join(', ')]].map(([k, v]) => (
+                  {[['Marca', product.brand], ['Código', product.sku], ...Object.entries(product.specs), ...(product.colors.length > 1 ? [['Colores', product.colors.map((c) => c.name).join(', ')]] : [])].map(([k, v]) => (
                     <tr key={k} className="border-b border-[#e6e6eb] even:bg-white">
                       <th scope="row" className="w-2/5 py-3 pr-4 text-left font-semibold text-[#4a4d57]">{k}</th>
                       <td className="py-3">{v}</td>

@@ -11,14 +11,10 @@ import { quickSearch } from '../services/catalogService'
 import { formatPrice } from '../lib/format'
 import { paths } from '../routes'
 
-const quickLinks = [
-  { label: 'Ofertas', to: paths.catalog({ oferta: '1', orden: 'descuento' }), accent: true },
-  { label: 'Televisores', to: paths.category('televisores') },
-  { label: 'Portátiles', to: paths.category('portatiles') },
-  { label: 'Celulares', to: paths.category('celulares') },
-  { label: 'Audio', to: paths.category('audio') },
-  { label: 'Gaming', to: paths.category('gaming') },
-  { label: 'Monitores', to: paths.category('monitores') },
+// Accesos rápidos: «Todo el catálogo» y luego las categorías que vienen del backend.
+const quickLinks = () => [
+  { label: 'Todo el catálogo', to: paths.catalog(), accent: true },
+  ...categories.slice(0, 6).map((c) => ({ label: c.name, to: paths.category(c.id) })),
 ]
 
 function SearchBox({ onDone, autoFocus = false }) {
@@ -44,7 +40,7 @@ function SearchBox({ onDone, autoFocus = false }) {
       <div className="flex h-11 border border-[#dddfe5] bg-[#fafafa] transition focus-within:border-secundario focus-within:bg-white">
         <input
           id={`${listId}-input`} autoFocus={autoFocus} type="search" autoComplete="off" value={value}
-          placeholder="Busca televisores, portátiles, audífonos…"
+          placeholder="Busca cable, breaker, contactor, luminaria…"
           role="combobox" aria-expanded={open && results.length > 0} aria-controls={listId} aria-autocomplete="list"
           aria-activedescendant={active >= 0 ? `${listId}-${active}` : undefined}
           className="min-w-0 flex-1 bg-transparent px-4 text-[13px] outline-none placeholder:text-[#9a9ca5] [&::-webkit-search-cancel-button]:hidden"
@@ -135,7 +131,7 @@ export default function Header() {
           <button type="button" className="grid size-10 place-items-center text-secundario lg:hidden" aria-label="Abrir menú" onClick={() => setMenuOpen(true)}><Menu size={24} /></button>
           <Link to={paths.home} className="flex shrink-0 items-center gap-3" aria-label="Tienda SIEV, ir al inicio">
             <img src={logo} alt="SIEV" className="h-11 w-auto object-contain sm:h-12" />
-            <span className="hidden border-l border-[#e2e2e8] pl-3 text-[10px] font-bold uppercase leading-tight tracking-[.18em] text-secundario sm:block">Tienda<br /><span className="text-principal">tecnología</span></span>
+            <span className="hidden border-l border-[#e2e2e8] pl-3 text-[10px] font-bold uppercase leading-tight tracking-[.18em] text-secundario sm:block">Tienda<br /><span className="text-principal">eléctrica</span></span>
           </Link>
           <div className="hidden flex-1 md:block"><SearchBox /></div>
           <nav className="ml-auto flex items-center gap-1 sm:gap-2" aria-label="Acciones de la cuenta">
@@ -168,7 +164,7 @@ export default function Header() {
                 </div>
               )}
             </div>
-            {quickLinks.map((l) => (
+            {quickLinks().map((l) => (
               <NavLink key={l.label} to={l.to} className={cx('border-b-2 border-transparent py-3 transition hover:border-principal hover:text-secundario', l.accent && 'text-principal')}>{l.label}</NavLink>
             ))}
           </div>
